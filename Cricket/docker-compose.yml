@@ -1,0 +1,32 @@
+version: '3'
+
+
+services:
+  cricket-database:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=cricket
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-room:/var/lib/mysql
+  cricket-information:
+    image: cricket.jar
+    ports:
+      - "9999:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://cricket-database:3306/cricket?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root"
+    build:
+      context: "./"
+      dockerfile: "Dockerfile"
+    depends_on:
+        - cricket-database
+      
+          
+volumes:
+  mysql-room:
+    
